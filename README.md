@@ -9,6 +9,6 @@ Link GitHub
 https://github.com/yoelsamosir/projects.git
 
 Bagian yang sudah dikerjakan tiap anggota:
-THEOFILUS WILLY MAROJAHAN HGL - Halaman POV Pelanggan 
-YOEL GILBERT SAMOSIR - Halaman POV Admin
+THEOFILUS WILLY MAROJAHAN HGL - Halaman POV Pelanggan; 
+YOEL GILBERT SAMOSIR - Halaman POV Admin;
 CHARDO FIDELIS SILALAHI - GitHub
