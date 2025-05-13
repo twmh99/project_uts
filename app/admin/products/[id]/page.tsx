@@ -3,7 +3,14 @@ import { HolographicButton } from '@/app/ui/futuristic/button';
 import Image from 'next/image';
 import { products } from '@/app/data/products';
 
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
+type PageProps = {
+  params: {
+    id: string;
+  };
+};
+
+export default function ProductDetailPage({ params }: PageProps) {
+
   const product = products.find(p => p.id.toString() === params.id);
 
   if (!product) {
