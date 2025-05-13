@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import { ParticleBackground } from '@/app/ui/futuristic/particles';
 import { HolographicButton } from '@/app/ui/futuristic/button';
 import Image from 'next/image';
@@ -6,8 +9,10 @@ import { products } from '@/app/data/products';
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const product = products.find(p => p.id.toString() === params.id);
 
+  const [quantity, setQuantity] = useState(1);
+
   if (!product) {
-    return <div>Produk tidak ditemukan</div>;
+    return <div className="text-center text-white py-20">Produk tidak ditemukan</div>;
   }
 
   return (
@@ -27,7 +32,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
             <div>
               <h1 className="text-4xl font-bold mb-4 text-cyan-400">{product.name}</h1>
-              <p className="text-2xl font-mono mb-6">${product.price}</p>
+              <<p className="text-2xl font-mono mb-6">${product.price.toLocaleString()}</p>
               
               <div className="mb-8">
                 <h3 className="text-xl font-bold mb-2 text-cyan-300">Deskripsi</h3>
@@ -46,11 +51,19 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
               <div className="flex space-x-4">
                 <div className="border border-cyan-400/30 rounded-lg overflow-hidden flex items-center">
-                  <button className="px-3 py-1 bg-cyan-900/20 hover:bg-cyan-800/30">
+                  <button
+                    className="px-3 py-1 bg-cyan-900/20 hover:bg-cyan-800/30"
+                    onClick={() => setQuantity(q => (q > 1 ? q - 1 : 1))}
+                  >
                     -
                   </button>
-                  <span className="px-3 py-1">1</span>
-                  <button className="px-3 py-1 bg-cyan-900/20 hover:bg-cyan-800/30">
+                  
+                  <span className="px-3 py-1">{quantity}</span>
+
+                  <button
+                    className="px-3 py-1 bg-cyan-900/20 hover:bg-cyan-800/30"
+                    onClick={() => setQuantity(q => q + 1)}
+                  >
                     +
                   </button>
                 </div>
@@ -80,7 +93,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                       />
                     </div>
                     <h4 className="text-lg font-bold text-cyan-300">{product.name}</h4>
-                    <p className="text-cyan-400">${product.price}</p>
+                    <p className="text-cyan-400">${product.price.toLocaleString()}</p>
                   </div>
                 ))}
             </div>
