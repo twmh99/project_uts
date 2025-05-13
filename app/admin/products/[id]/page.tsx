@@ -6,6 +6,7 @@ import { HolographicButton } from '@/app/ui/futuristic/button';
 import Image from 'next/image';
 import { products } from '@/app/data/products';
 
+// Pastikan ini adalah page yang menerima parameter id
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const product = products.find(p => p.id.toString() === params.id);
 
