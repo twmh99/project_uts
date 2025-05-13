@@ -3,19 +3,11 @@ import { HolographicButton } from '@/app/ui/futuristic/button';
 import Image from 'next/image';
 import { products } from '@/app/data/products';
 
-export default function ProductDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const product = products.find((p) => p.id.toString() === params.id);
+export default function ProductDetailPage({ params }: { params: { id: string } }) {
+  const product = products.find(p => p.id.toString() === params.id);
 
   if (!product) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-red-500 text-xl">
-        Produk tidak ditemukan
-      </div>
-    );
+    return <div>Produk tidak ditemukan</div>;
   }
 
   return (
@@ -34,22 +26,16 @@ export default function ProductDetailPage({
             </div>
 
             <div>
-              <h1 className="text-4xl font-bold mb-4 text-cyan-400">
-                {product.name}
-              </h1>
+              <h1 className="text-4xl font-bold mb-4 text-cyan-400">{product.name}</h1>
               <p className="text-2xl font-mono mb-6">${product.price}</p>
-
+              
               <div className="mb-8">
-                <h3 className="text-xl font-bold mb-2 text-cyan-300">
-                  Deskripsi
-                </h3>
+                <h3 className="text-xl font-bold mb-2 text-cyan-300">Deskripsi</h3>
                 <p className="text-cyan-100">{product.description}</p>
               </div>
 
               <div className="mb-8">
-                <h3 className="text-xl font-bold mb-2 text-cyan-300">
-                  Spesifikasi
-                </h3>
+                <h3 className="text-xl font-bold mb-2 text-cyan-300">Spesifikasi</h3>
                 <ul className="text-cyan-100 space-y-2">
                   <li>• Teknologi mutakhir dengan integrasi AI</li>
                   <li>• Desain ergonomis dan futuristik</li>
@@ -77,31 +63,24 @@ export default function ProductDetailPage({
           </div>
 
           <section className="mt-20">
-            <h3 className="text-2xl font-bold mb-6 text-cyan-400">
-              Produk Terkait
-            </h3>
-
+            <h3 className="text-2xl font-bold mb-6 text-cyan-400">Produk Terkait</h3>
+            
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {products
-                .filter((p) => p.id !== product.id)
+                .filter(p => p.id !== product.id)
                 .slice(0, 4)
-                .map((related) => (
-                  <div
-                    key={related.id}
-                    className="bg-black/50 border border-cyan-400/20 rounded-xl p-4 hover:shadow-cyan-500/20 hover:shadow-lg transition-all"
-                  >
+                .map(product => (
+                  <div key={product.id} className="bg-black/50 border border-cyan-400/20 rounded-xl p-4 hover:shadow-cyan-500/20 hover:shadow-lg transition-all">
                     <div className="relative h-40 mb-4">
                       <Image
-                        src={related.image}
-                        alt={related.name}
+                        src={product.image}
+                        alt={product.name}
                         fill
                         className="object-contain"
                       />
                     </div>
-                    <h4 className="text-lg font-bold text-cyan-300">
-                      {related.name}
-                    </h4>
-                    <p className="text-cyan-400">${related.price}</p>
+                    <h4 className="text-lg font-bold text-cyan-300">{product.name}</h4>
+                    <p className="text-cyan-400">${product.price}</p>
                   </div>
                 ))}
             </div>
