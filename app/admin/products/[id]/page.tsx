@@ -32,7 +32,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
             <div>
               <h1 className="text-4xl font-bold mb-4 text-cyan-400">{product.name}</h1>
-              <<p className="text-2xl font-mono mb-6">${product.price.toLocaleString()}</p>
+              <p className="text-2xl font-mono mb-6">${product.price.toLocaleString()}</p>
               
               <div className="mb-8">
                 <h3 className="text-xl font-bold mb-2 text-cyan-300">Deskripsi</h3>
