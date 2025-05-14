@@ -3,7 +3,7 @@ import { TransactionForm } from '../transaction-form';
 
 export default async function EditTransactionPage({ params }: { params: { id: string } }) {
   const id = await new Promise<string>((resolve) => {
-    setTimeout(() => resolve(params.id), 100); // Delay 100ms sebagai contoh
+    setTimeout(() => resolve(params.id), 100);
   }); 
   const transaction = {
     id: id,
