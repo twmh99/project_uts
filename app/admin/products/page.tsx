@@ -10,7 +10,7 @@ export default function AdminProductsPage() {
                     href="/admin/products/new"
                     className="px-4 py-2 bg-cyan-500 text-black rounded-lg hover:bg-cyan-400 transition-colors"
                 >
-                    Tambah Produk
+                   + Tambah Produk
                 </Link>
             </div>
 
