@@ -1,9 +1,10 @@
 import { ParticleBackground } from '@/app/ui/futuristic/particles';
 import { TransactionForm } from '../../transaction-form';
 
-export default function EditTransactionPage({ params }: { params: { id: string } }) {
+export default async function EditTransactionPage({ params }: { params: { id: string } }) {
+  const {id} = params;
   const transaction = {
-    id: params.id,
+    id: id,
     customer: 'Example Customer',
     items: ['1', '2'], 
     amount: 299,

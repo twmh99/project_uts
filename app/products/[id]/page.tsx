@@ -3,8 +3,9 @@ import { HolographicButton } from '@/app/ui/futuristic/button';
 import Image from 'next/image';
 import { products } from '@/app/data/products';
 
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
-  const product = products.find(p => p.id.toString() === params.id);
+export default async function ProductDetailPage({ params }: { params: { id: string } }) {
+  const {id} = params;
+  const product = products.find(p => p.id.toString() === id);
 
   if (!product) {
     return <div>Produk tidak ditemukan</div>;
