@@ -1,18 +1,20 @@
-// 'use client';
+'use client';
 
-// import { ParticleBackground } from '@/app/ui/futuristic/particles';
-// import { HolographicButton } from '@/app/ui/futuristic/button';
-// import Image from 'next/image';
-// import { products } from '@/app/data/products';
-// import { notFound, useParams } from 'next/navigation';
+import { useState } from 'react';
+import { ParticleBackground } from '@/app/ui/futuristic/particles';
+import { HolographicButton } from '@/app/ui/futuristic/button';
+import Image from 'next/image';
+import { products } from '@/app/data/products';
 
-// export default function ProductDetailPage() {
-//   const params = useParams();
-//   const product = products.find(p => p.id.toString() === params?.id);
+// Pastikan ini adalah page yang menerima parameter id
+export default function ProductDetailPage({ params }: { params: { id: string } }) {
+  const product = products.find(p => p.id.toString() === params.id);
 
-//   if (!product) {
-//     return <div className="text-center py-20 text-red-400">Produk tidak ditemukan</div>;
-//   }
+  const [quantity, setQuantity] = useState(1);
+
+  if (!product) {
+    return <div className="text-center text-white py-20">Produk tidak ditemukan</div>;
+  }
 
 //   return (
 //     <div className="min-h-screen relative">
@@ -30,14 +32,14 @@
 //               />
 //             </div>
 
-//             <div>
-//               <h1 className="text-4xl font-bold mb-4 text-cyan-400">{product.name}</h1>
-//               <p className="text-2xl font-mono mb-6">${product.price}</p>
-
-//               <div className="mb-8">
-//                 <h3 className="text-xl font-bold mb-2 text-cyan-300">Deskripsi</h3>
-//                 <p className="text-cyan-100">{product.description}</p>
-//               </div>
+            <div>
+              <h1 className="text-4xl font-bold mb-4 text-cyan-400">{product.name}</h1>
+              <p className="text-2xl font-mono mb-6">${product.price.toLocaleString()}</p>
+              
+              <div className="mb-8">
+                <h3 className="text-xl font-bold mb-2 text-cyan-300">Deskripsi</h3>
+                <p className="text-cyan-100">{product.description}</p>
+              </div>
 
 //               <div className="mb-8">
 //                 <h3 className="text-xl font-bold mb-2 text-cyan-300">Spesifikasi</h3>
@@ -49,12 +51,24 @@
 //                 </ul>
 //               </div>
 
-//               <div className="flex space-x-4">
-//                 <div className="border border-cyan-400/30 rounded-lg overflow-hidden flex items-center">
-//                   <button className="px-3 py-1 bg-cyan-900/20 hover:bg-cyan-800/30">-</button>
-//                   <span className="px-3 py-1">1</span>
-//                   <button className="px-3 py-1 bg-cyan-900/20 hover:bg-cyan-800/30">+</button>
-//                 </div>
+              <div className="flex space-x-4">
+                <div className="border border-cyan-400/30 rounded-lg overflow-hidden flex items-center">
+                  <button
+                    className="px-3 py-1 bg-cyan-900/20 hover:bg-cyan-800/30"
+                    onClick={() => setQuantity(q => (q > 1 ? q - 1 : 1))}
+                  >
+                    -
+                  </button>
+                  
+                  <span className="px-3 py-1">{quantity}</span>
+
+                  <button
+                    className="px-3 py-1 bg-cyan-900/20 hover:bg-cyan-800/30"
+                    onClick={() => setQuantity(q => q + 1)}
+                  >
+                    +
+                  </button>
+                </div>
 
 //                 <HolographicButton className="flex-1">
 //                   Tambah ke Keranjang
@@ -63,31 +77,31 @@
 //             </div>
 //           </div>
 
-//           <section className="mt-20">
-//             <h3 className="text-2xl font-bold mb-6 text-cyan-400">Produk Terkait</h3>
-//             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-//               {products
-//                 .filter(p => p.id !== product.id)
-//                 .slice(0, 4)
-//                 .map(p => (
-//                   <div key={p.id} className="bg-black/50 border border-cyan-400/20 rounded-xl p-4 hover:shadow-cyan-500/20 hover:shadow-lg transition-all">
-//                     <div className="relative h-40 mb-4">
-//                       <Image
-//                         src={p.image}
-//                         alt={p.name}
-//                         fill
-//                         sizes="(max-width: 768px) 100vw, 25vw"
-//                         className="object-contain"
-//                       />
-//                     </div>
-//                     <h4 className="text-lg font-bold text-cyan-300">{p.name}</h4>
-//                     <p className="text-cyan-400">${p.price}</p>
-//                   </div>
-//                 ))}
-//             </div>
-//           </section>
-//         </div>
-//       </main>
-//     </div>
-//   );
-// }
+          <section className="mt-20">
+            <h3 className="text-2xl font-bold mb-6 text-cyan-400">Produk Terkait</h3>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {products
+                .filter(p => p.id !== product.id)
+                .slice(0, 4)
+                .map(product => (
+                  <div key={product.id} className="bg-black/50 border border-cyan-400/20 rounded-xl p-4 hover:shadow-cyan-500/20 hover:shadow-lg transition-all">
+                    <div className="relative h-40 mb-4">
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+                    <h4 className="text-lg font-bold text-cyan-300">{product.name}</h4>
+                    <p className="text-cyan-400">${product.price.toLocaleString()}</p>
+                  </div>
+                ))}
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  );
+}
