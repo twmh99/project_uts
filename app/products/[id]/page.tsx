@@ -4,7 +4,9 @@ import Image from 'next/image';
 import { products } from '@/app/data/products';
 
 export default async function ProductDetailPage({ params }: { params: { id: string } }) {
-  const {id} = params;
+  const id = await new Promise<string>((resolve) => {
+    setTimeout(() => resolve(params.id), 100); // Delay 100ms sebagai contoh
+  });
   const product = products.find(p => p.id.toString() === id);
 
   if (!product) {
@@ -29,7 +31,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
             <div>
               <h1 className="text-4xl font-bold mb-4 text-cyan-400">{product.name}</h1>
               <p className="text-2xl font-mono mb-6">${product.price}</p>
-              
+
               <div className="mb-8">
                 <h3 className="text-xl font-bold mb-2 text-cyan-300">Deskripsi</h3>
                 <p className="text-cyan-100">{product.description}</p>
@@ -65,7 +67,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
 
           <section className="mt-20">
             <h3 className="text-2xl font-bold mb-6 text-cyan-400">Produk Terkait</h3>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {products
                 .filter(p => p.id !== product.id)
