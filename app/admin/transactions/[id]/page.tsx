@@ -2,22 +2,24 @@ import { ParticleBackground } from '@/app/ui/futuristic/particles';
 import { TransactionForm } from '../transaction-form';
 import { type Metadata } from 'next';
 
-interface EditTransactionPageProps {
+type EditTransactionPageProps = {
   params: {
     id: string;
   };
-}
+};
 
 export async function generateMetadata({ params }: EditTransactionPageProps): Promise<Metadata> {
   return {
-    title: `Edit Transaksi #${params.id}`,
+    title: `Edit Transaksi ${params.id}`,
   };
 }
 
-export default function EditTransactionPage({ params }: EditTransactionPageProps) {
+export default async function EditTransactionPage({ params }: EditTransactionPageProps) {
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  
   const id = params.id;
   const transaction = {
-    id: id,
+    id,
     customer: 'Example Customer',
     items: ['1', '2'],
     amount: 299,
