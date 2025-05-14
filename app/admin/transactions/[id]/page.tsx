@@ -1,5 +1,5 @@
 import { ParticleBackground } from '@/app/ui/futuristic/particles';
-import { TransactionForm } from '../../transaction-form';
+import { TransactionForm } from '../transaction-form';
 
 export default async function EditTransactionPage({ params }: { params: { id: string } }) {
   const {id} = params;
