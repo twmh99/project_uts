@@ -2,9 +2,8 @@ import { ParticleBackground } from '@/app/ui/futuristic/particles';
 import { TransactionForm } from '../transaction-form';
 
 export default async function EditTransactionPage({ params }: { params: { id: string } }) {
-  const id = await new Promise<string>((resolve) => {
-    setTimeout(() => resolve(params.id), 100);
-  }); 
+await new Promise((resolve) => setTimeout(resolve, 100));
+const id = params.id; 
   const transaction = {
     id: id,
     customer: 'Example Customer',
