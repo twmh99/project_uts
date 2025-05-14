@@ -16,21 +16,21 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     return <div className="text-center text-white py-20">Produk tidak ditemukan</div>;
   }
 
-//   return (
-//     <div className="min-h-screen relative">
-//       <ParticleBackground />
-//       <main className="container mx-auto px-4 py-24 relative z-10">
-//         <div className="max-w-6xl mx-auto">
-//           <div className="grid md:grid-cols-2 gap-12">
-//             <div className="relative h-96 bg-black/50 border border-cyan-400/20 rounded-xl overflow-hidden">
-//               <Image
-//                 src={product.image}
-//                 alt={product.name}
-//                 fill
-//                 sizes="(max-width: 768px) 100vw, 50vw"
-//                 className="object-contain p-8"
-//               />
-//             </div>
+  return (
+    <div className="min-h-screen relative">
+      <ParticleBackground />
+      <main className="container mx-auto px-4 py-24 relative z-10">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12">
+            <div className="relative h-96 bg-black/50 border border-cyan-400/20 rounded-xl overflow-hidden">
+              <Image
+                src={product.image}
+                alt={product.name}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-contain p-8"
+              />
+            </div>
 
             <div>
               <h1 className="text-4xl font-bold mb-4 text-cyan-400">{product.name}</h1>
