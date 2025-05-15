@@ -1,17 +1,10 @@
-// app/admin/transactions/[id]/page.tsx
 import { ParticleBackground } from '@/app/ui/futuristic/particles';
 import { TransactionForm } from '../transaction-form';
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Edit Transaksi',
-};
 
 export default async function EditTransactionPage({ params }: { params: { id: string } }) {
-  // Simulasi fetch data, boleh ganti ke fetch API nyata
-  await new Promise((resolve) => setTimeout(resolve, 100));
-  const id = params.id;
-
+  const id = await new Promise<string>((resolve) => {
+    setTimeout(() => resolve(params.id), 100);
+  }); 
   const transaction = {
     id: id,
     customer: 'Example Customer',
@@ -26,7 +19,7 @@ export default async function EditTransactionPage({ params }: { params: { id: st
       <ParticleBackground />
       <main className="container mx-auto px-4 py-24">
         <div className="max-w-4xl mx-auto bg-black/50 border border-cyan-400/20 rounded-xl p-8 backdrop-blur-md">
-          <h1 className="text-3xl font-bold mb-8 text-cyan-400">Edit Transaksi</h1>
+          <h1 className="text-3xl font-bold mb-8 text-cyan-400">Edit Transaksi :</h1>
           <TransactionForm initialData={transaction} />
         </div>
       </main>
