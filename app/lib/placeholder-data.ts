@@ -4,15 +4,19 @@ export const users = [
 ];
 
 export const customers = [
-  { id: 'uuid-cust-1', name: 'Customer A', email: 'a@example.com', image_url: '/img/a.png' },
+  {
+    name: 'Lemon Future',
+    email: 'filemon@futuretech.com',
+    image_url: 'https://i.pravatar.cc/150?img=66',
+  },
 ];
 
 export const invoices = [
   {
-    customer_email: 'a@example.com',
-    amount: 500,
+    customer_email: 'lemon@gmail.com',
+    amount: 666,
     status: 'paid',
-    date: '2024-01-01',
+    date: '2025-01-01',
   },
 ];
 
