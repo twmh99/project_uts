@@ -1,6 +1,12 @@
-import bcryptjs from 'bcryptjs';
+import { hash } from 'bcryptjs';
 import postgres from 'postgres';
-import { invoices, customers, revenue, users } from '@/app/lib/placeholder-data';
+import {
+  invoices,
+  customers,
+  revenue,
+  users,
+  products,
+} from '@/app/lib/placeholder-data';
 
 const sql = postgres(process.env.POSTGRES_URL!, {
   ssl: 'require',
@@ -19,7 +25,7 @@ async function seedUsers() {
   `;
 
   for (const user of users) {
-    const hashedPassword = await bcryptjs.hash(user.password, 10);
+    const hashedPassword = await hash(user.password, 10);
     await sql`
       INSERT INTO users (name, email, password)
       VALUES (${user.name}, ${user.email}, ${hashedPassword})
@@ -63,7 +69,6 @@ async function seedInvoices() {
     );
   `;
 
-  // Ambil semua customer dari DB agar dapat ID valid
   const dbCustomers = await sql`SELECT id, email FROM customers`;
 
   for (const invoice of invoices) {
@@ -95,6 +100,27 @@ async function seedRevenue() {
   }
 }
 
+async function seedProducts() {
+  await sql`
+    CREATE TABLE IF NOT EXISTS products (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(100) NOT NULL,
+      image TEXT NOT NULL,
+      price INTEGER NOT NULL,
+      stock INTEGER NOT NULL,
+      status VARCHAR(50) NOT NULL
+    );
+  `;
+
+  for (const product of products) {
+    await sql`
+      INSERT INTO products (name, image, price, stock, status)
+      VALUES (${product.name}, ${product.image}, ${product.price}, ${product.stock}, ${product.status})
+      ON CONFLICT DO NOTHING;
+    `;
+  }
+}
+
 export async function GET() {
   try {
     await sql.begin(async (sql) => {
@@ -102,6 +128,7 @@ export async function GET() {
       await seedCustomers();
       await seedInvoices();
       await seedRevenue();
+      await seedProducts(); // ← include this to seed products
     });
 
     return new Response(
