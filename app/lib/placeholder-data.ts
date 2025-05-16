@@ -7,7 +7,7 @@ export const customers = [
   {
     name: 'Lemon Future',
     email: 'filemon@futuretech.com',
-    image_url: 'https://i.pravatar.cc/150?img=66',
+    image_url: 'avatar.png',
   },
 ];
 
