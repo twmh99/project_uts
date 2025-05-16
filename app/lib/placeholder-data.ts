@@ -8,7 +8,12 @@ export const customers = [
 ];
 
 export const invoices = [
-  { customer_id: 'uuid-cust-1', amount: 500, status: 'paid', date: '2024-01-01' },
+  {
+    customer_email: 'a@example.com',
+    amount: 500,
+    status: 'paid',
+    date: '2024-01-01',
+  },
 ];
 
 export const revenue = [

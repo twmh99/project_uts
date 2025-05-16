@@ -1,4 +1,4 @@
-import bcryptjs from 'bcrypt';
+import bcryptjs from 'bcryptjs';
 import postgres from 'postgres';
 import { invoices, customers, revenue, users } from '@/app/lib/placeholder-data';
 
@@ -21,9 +21,9 @@ async function seedUsers() {
   for (const user of users) {
     const hashedPassword = await bcryptjs.hash(user.password, 10);
     await sql`
-      INSERT INTO users (id, name, email, password)
-      VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword})
-      ON CONFLICT (id) DO NOTHING;
+      INSERT INTO users (name, email, password)
+      VALUES (${user.name}, ${user.email}, ${hashedPassword})
+      ON CONFLICT (email) DO NOTHING;
     `;
   }
 }
@@ -35,16 +35,16 @@ async function seedCustomers() {
     CREATE TABLE IF NOT EXISTS customers (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
       name VARCHAR(255) NOT NULL,
-      email VARCHAR(255) NOT NULL,
+      email VARCHAR(255) NOT NULL UNIQUE,
       image_url VARCHAR(255) NOT NULL
     );
   `;
 
   for (const customer of customers) {
     await sql`
-      INSERT INTO customers (id, name, email, image_url)
-      VALUES (${customer.id}, ${customer.name}, ${customer.email}, ${customer.image_url})
-      ON CONFLICT (id) DO NOTHING;
+      INSERT INTO customers (name, email, image_url)
+      VALUES (${customer.name}, ${customer.email}, ${customer.image_url})
+      ON CONFLICT (email) DO NOTHING;
     `;
   }
 }
@@ -58,14 +58,21 @@ async function seedInvoices() {
       customer_id UUID NOT NULL,
       amount INT NOT NULL,
       status VARCHAR(255) NOT NULL,
-      date DATE NOT NULL
+      date DATE NOT NULL,
+      FOREIGN KEY (customer_id) REFERENCES customers(id)
     );
   `;
 
+  // Ambil semua customer dari DB agar dapat ID valid
+  const dbCustomers = await sql`SELECT id, email FROM customers`;
+
   for (const invoice of invoices) {
+    const customer = dbCustomers.find((c: any) => c.email === invoice.customer_email);
+    if (!customer) continue;
+
     await sql`
       INSERT INTO invoices (customer_id, amount, status, date)
-      VALUES (${invoice.customer_id}, ${invoice.amount}, ${invoice.status}, ${invoice.date})
+      VALUES (${customer.id}, ${invoice.amount}, ${invoice.status}, ${invoice.date})
       ON CONFLICT (id) DO NOTHING;
     `;
   }
