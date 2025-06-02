@@ -1,4 +1,4 @@
-import { ParticleBackground } from '../ui/futuristic/particles';
+import { ParticleBackground } from '../../ui/futuristic/particles';
 import Image from 'next/image';
 import { FiLinkedin, FiGithub, FiTwitter, FiInstagram } from 'react-icons/fi';
 

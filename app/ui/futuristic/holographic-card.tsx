@@ -42,7 +42,7 @@ export function HolographicCard({ product }: { product: any }) {
             className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg hover:shadow-cyan-400/50 hover:shadow-lg transition-all"
             onClick={handleAddToCart}
           >
-            Masukkan Keranjang
+           Masukkan Keranjang
           </button>
         </div>
       </div>

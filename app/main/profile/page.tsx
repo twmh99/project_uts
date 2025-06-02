@@ -1,7 +1,7 @@
 "use client";
 
-import { ParticleBackground } from '../ui/futuristic/particles';
-import { HolographicAvatar } from '../ui/futuristic/avatar';
+import { ParticleBackground } from '../../ui/futuristic/particles';
+import { HolographicAvatar } from '../../ui/futuristic/avatar';
 import { useState } from 'react';
 
 export default function ProfilePage() {

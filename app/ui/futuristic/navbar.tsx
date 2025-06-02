@@ -6,11 +6,11 @@ import { FiHome, FiShoppingBag, FiUser, FiInfo, FiShoppingCart, FiDollarSign, Fi
 import { useCart } from '../../context/cart-context';
 
 const customerNavItems = [
-  { name: 'Beranda', path: '/', icon: <FiHome /> },
-  { name: 'Katalog', path: '/catalogue', icon: <FiShoppingBag /> },
-  { name: 'Tentang', path: '/about', icon: <FiInfo /> },
-  { name: 'Kontak', path: '/contact', icon: <FiMail /> },
-  { name: 'Profil', path: '/profile', icon: <FiUser /> },
+  { name: 'Beranda', path: '/main/home', icon: <FiHome /> },      // Changed from '/'
+  { name: 'Katalog', path: '/main/catalogue', icon: <FiShoppingBag /> }, // Changed from '/catalogue'
+  { name: 'Tentang', path: '/main/about', icon: <FiInfo /> },
+  { name: 'Kontak', path: '/main/contact', icon: <FiMail /> },
+  { name: 'Profil', path: '/main/profile', icon: <FiUser /> },
 ];
 
 const logoutItem = {
@@ -43,7 +43,7 @@ export function FloatingNav() {
   if (!isAdminPage) {
     customerItems.push({
       name: 'Keranjang',
-      path: '/cart',
+      path: '/main/cart',
       icon: (
         <div className="relative">
           <FiShoppingCart />

@@ -1,8 +1,8 @@
 'use client';
 
-import { useCart } from '../context/cart-context';
-import { ParticleBackground } from '../ui/futuristic/particles';
-import { HolographicButton } from '../ui/futuristic/button';
+import { useCart } from '../../context/cart-context';
+import { ParticleBackground } from '../../ui/futuristic/particles';
+import { HolographicButton } from '../../ui/futuristic/button';
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity } = useCart();

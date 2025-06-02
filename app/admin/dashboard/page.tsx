@@ -1,20 +1,24 @@
+import Link from 'next/link';
 import { Card } from '@/app/ui/admin/card';
-import { products } from '@/app/data/products';
+import { getProducts } from '@/lib/query/getProducts';
+import { getUsers } from '@/lib/query/getUsers';
+import { getRecentTransactions } from '@/lib/query/getTransactions';
+import { format } from 'date-fns';
 
-export default function AdminDashboardPage() {
+export default async function AdminDashboardPage() {
+  const products = await getProducts();
+  const transactions = await getRecentTransactions();
+  const users = await getUsers();
+
+  const totalProducts = products.length;
+  const totalTransactions = transactions.length;
+  const totalIncome = transactions.reduce((sum, tx) => sum + Number(tx.amount), 0);
+
   const stats = [
-    { title: 'Total Produk', value: '24', change: '+5%', trend: 'up' },
-    { title: 'Total Transaksi', value: '156', change: '+12%', trend: 'up' },
-    { title: 'Pendapatan', value: '$12,345', change: '+8%', trend: 'up' },
-    { title: 'Pengguna', value: '89', change: '-2%', trend: 'down' },
-  ];
-
-  const recentTransactions = [
-    { id: '#FT-1001', customer: 'Yosia', amount: '$299', date: '2023-10-15', status: 'Completed' },
-    { id: '#FT-1000', customer: 'Aldo', amount: '$199', date: '2023-10-14', status: 'Completed' },
-    { id: '#FT-0999', customer: 'Dicky', amount: '$599', date: '2023-10-13', status: 'Processing' },
-    { id: '#FT-0998', customer: 'Andre', amount: '$249', date: '2023-10-12', status: 'Completed' },
-    { id: '#FT-0997', customer: 'Ambro', amount: '$129', date: '2023-10-11', status: 'Completed' },
+    { title: 'Total Produk', value: `${totalProducts}`, change: '+5%', trend: 'up' },
+    { title: 'Total Transaksi', value: `${totalTransactions}`, change: '+12%', trend: 'up' },
+    { title: 'Pendapatan', value: `$${totalIncome.toLocaleString()}`, change: '+8%', trend: 'up' },
+    { title: 'Pengguna', value: users.length.toString(), change: '+0%', trend: 'up' },
   ];
 
   return (
@@ -38,30 +42,35 @@ export default function AdminDashboardPage() {
           <h3 className="text-xl font-bold mb-6 text-cyan-400">Transaksi Terbaru</h3>
 
           <div className="space-y-4">
-            {recentTransactions.map((transaction) => (
+            {transactions.slice(0, 6).map((transaction) => (
               <div key={transaction.id} className="flex justify-between items-center border-b border-cyan-400/10 pb-3">
                 <div>
                   <p className="font-medium">{transaction.id}</p>
                   <p className="text-sm text-cyan-300">{transaction.customer}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-mono">{transaction.amount}</p>
-                  <p className="text-sm text-cyan-300">{transaction.date}</p>
+                  <p className="font-mono">${Number(transaction.amount).toFixed(2)}</p>
+                  <p className="text-sm text-cyan-300">
+                    {format(new Date(transaction.transaction_date), 'yyyy-MM-dd')}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
 
-          <button className="mt-6 text-cyan-400 hover:text-cyan-300">
+          <Link
+            href="/admin/transactions"
+            className="mt-6 inline-block text-cyan-400 hover:text-cyan-300"
+          >
             Lihat Semua Transaksi →
-          </button>
+          </Link>
         </div>
 
         <div className="bg-black/50 border border-cyan-400/20 rounded-xl p-6">
           <h3 className="text-xl font-bold mb-6 text-cyan-400">Produk Terpopuler</h3>
 
           <div className="space-y-4">
-            {products.slice(0, 4).map((product) => (
+            {products.slice(0, 5).map((product) => (
               <div key={product.id} className="flex items-center space-x-4 border-b border-cyan-400/10 pb-3">
                 <div className="w-16 h-16 bg-cyan-900/10 rounded-lg overflow-hidden">
                   <img
@@ -78,9 +87,12 @@ export default function AdminDashboardPage() {
             ))}
           </div>
 
-          <button className="mt-6 text-cyan-400 hover:text-cyan-300">
+          <Link
+            href="/admin/products"
+            className="mt-6 inline-block text-cyan-400 hover:text-cyan-300"
+          >
             Lihat Semua Produk →
-          </button>
+          </Link>
         </div>
       </div>
     </div>
