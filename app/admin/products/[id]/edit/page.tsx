@@ -1,18 +1,19 @@
 // app/admin/products/[id]/edit/page.tsx
+
 import EditPage from "@/components/editproduct";
 import { notFound } from "next/navigation";
 
-interface PageProps {
+type Props = {
   params: {
     id: string;
   };
-}
+};
 
-export default function Page({ params }: PageProps) {
+export default function Page({ params }: Props) {
   const id = parseInt(params.id);
 
   if (isNaN(id)) {
-    notFound();
+    notFound(); // akan tampilkan 404 page
   }
 
   return (
