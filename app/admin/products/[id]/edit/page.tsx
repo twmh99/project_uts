@@ -3,17 +3,16 @@
 import EditPage from "@/components/editproduct";
 import { notFound } from "next/navigation";
 
-type Props = {
+type PageProps = {
   params: {
     id: string;
   };
 };
 
-export default function Page({ params }: Props) {
+export default function Page({ params }: PageProps) {
   const id = parseInt(params.id);
-
   if (isNaN(id)) {
-    notFound(); // akan tampilkan 404 page
+    notFound();
   }
 
   return (
