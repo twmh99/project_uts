@@ -6,7 +6,7 @@ type PageProps = {
   };
 };
 
-export default async function pageEdit({ params }: PageProps) {
+export default function pageEdit({ params }: PageProps) {
   const id = parseInt(params.id);
 
   return (

@@ -12,12 +12,13 @@ export default function ProductForm() {
     status: '',
     unggulan: '',
     kategori: '',
+    description: '',
   })
 
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
@@ -32,20 +33,20 @@ export default function ProductForm() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        name: form.name,
-        image: form.image,
+        ...form,
         price: Number(form.price),
         stock: Number(form.stock),
-        status: form.status,
         unggulan: form.unggulan || null,
         kategori: form.kategori || null,
+        description: form.description || '',
       }),
     })
 
+    const data = await res.json()
+
     if (!res.ok) {
-      const errorData = await res.json()
-      console.error('API Error:', errorData)
-      setMessage({ type: 'error', text: errorData.message || '⚠️ Gagal menyimpan produk. Coba lagi nanti.' })
+      console.error('API Error:', data)
+      setMessage({ type: 'error', text: data.message || '⚠️ Gagal menyimpan produk. Coba lagi nanti.' })
       setLoading(false)
       return
     }
@@ -59,6 +60,7 @@ export default function ProductForm() {
       status: '',
       unggulan: '',
       kategori: '',
+      description: '',
     })
     setLoading(false)
   }
@@ -78,7 +80,7 @@ export default function ProductForm() {
           value={form.name}
           onChange={handleChange}
           required
-          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
+          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg"
         />
 
         <input
@@ -88,7 +90,7 @@ export default function ProductForm() {
           value={form.image}
           onChange={handleChange}
           required
-          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
+          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg"
         />
 
         <input
@@ -98,7 +100,7 @@ export default function ProductForm() {
           value={form.price}
           onChange={handleChange}
           required
-          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
+          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg"
         />
 
         <input
@@ -108,7 +110,7 @@ export default function ProductForm() {
           value={form.stock}
           onChange={handleChange}
           required
-          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
+          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg"
         />
 
         <select
@@ -116,7 +118,7 @@ export default function ProductForm() {
           value={form.status}
           onChange={handleChange}
           required
-          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
+          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg"
         >
           <option value="">Pilih Status</option>
           <option value="tersedia">Tersedia</option>
@@ -127,7 +129,7 @@ export default function ProductForm() {
           name="kategori"
           value={form.kategori}
           onChange={handleChange}
-          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
+          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg"
         >
           <option value="">Pilih Kategori</option>
           <option value="Wearables">Wearables</option>
@@ -143,9 +145,17 @@ export default function ProductForm() {
           placeholder="Unggulan (opsional)"
           value={form.unggulan}
           onChange={handleChange}
-          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
+          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg"
         />
       </div>
+
+      <textarea
+        name="description"
+        placeholder="Deskripsi Produk"
+        value={form.description}
+        onChange={handleChange}
+        className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg w-full min-h-[100px]"
+      />
 
       {message && (
         <p
