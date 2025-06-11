@@ -1,8 +1,6 @@
-// File: /lib/query/getTransactions.ts
+import { db } from '@/lib/db';
 
-import { db } from '../db';
 
-// Fungsi untuk mendapatkan recent transactions (10 terakhir)
 export async function getRecentTransactions() {
   try {
     const result = await db.query(`
@@ -18,7 +16,6 @@ export async function getRecentTransactions() {
   }
 }
 
-// Fungsi untuk mendapatkan transaksi berdasarkan query (search) dan halaman
 export async function getFilteredTransactions(query: string, currentPage: number) {
   const ITEMS_PER_PAGE = 6;
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -34,7 +31,7 @@ export async function getFilteredTransactions(query: string, currentPage: number
         status ILIKE $1
       ORDER BY transaction_date DESC
       LIMIT $2 OFFSET $3
-    `,
+      `,
       [`%${query}%`, ITEMS_PER_PAGE, offset]
     );
 
@@ -45,7 +42,7 @@ export async function getFilteredTransactions(query: string, currentPage: number
   }
 }
 
-// Fungsi untuk menghitung total halaman transaksi berdasarkan query
+// Fungsi untuk menghitung total halaman
 export async function getTransactionsPages(query: string) {
   const ITEMS_PER_PAGE = 6;
 
@@ -58,14 +55,12 @@ export async function getTransactionsPages(query: string) {
         customer ILIKE $1 OR
         id::text ILIKE $1 OR
         status ILIKE $1
-    `,
+      `,
       [`%${query}%`]
     );
 
     const totalCount = Number(result.rows[0].total);
-    const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
-
-    return totalPages;
+    return Math.ceil(totalCount / ITEMS_PER_PAGE);
   } catch (error) {
     console.error('Database Error (getTransactionsPages):', error);
     throw new Error('Failed to fetch total number of transactions.');

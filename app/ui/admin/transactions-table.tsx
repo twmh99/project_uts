@@ -38,13 +38,14 @@ export default async function TransactionsTable({
                 <td className="p-4 font-mono">${parseFloat(transaction.amount).toFixed(2)}</td>
                 <td className="p-4">{new Date(transaction.transaction_date).toLocaleDateString()}</td>
                 <td className="p-4">
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    transaction.status === 'Completed'
+                  <span className={`px-2 py-1 rounded-full text-xs ${transaction.status === 'Completed'
                       ? 'bg-green-900/30 text-green-400'
-                      : transaction.status === 'Pending'
-                      ? 'bg-yellow-900/30 text-yellow-400'
-                      : 'bg-red-900/30 text-red-400'
-                  }`}>
+                      : transaction.status === 'Canceled'
+                        ? 'bg-orange-900/30 text-orange-400'
+                        : transaction.status === 'Processing'
+                          ? 'bg-yellow-900/30 text-yellow-400'
+                          : 'bg-red-900/30 text-red-400'
+                    }`}>
                     {transaction.status}
                   </span>
                 </td>

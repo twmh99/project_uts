@@ -3,10 +3,14 @@
 import { useState } from 'react';
 import { HolographicButton } from '@/app/ui/futuristic/button';
 import { useRouter } from 'next/navigation';
-import { products } from '@/app/data/products';
+
+type Product = {
+  id: number;
+  name: string;
+  price: number;
+};
 
 type Transaction = {
-  id?: string;
   customer: string;
   items: string[];
   amount: number;
@@ -14,50 +18,65 @@ type Transaction = {
   status: 'Completed' | 'Processing' | 'Cancelled';
 };
 
-export function TransactionForm({ initialData }: { initialData?: Transaction }) {
+type TransactionFormProps = {
+  initialData?: Transaction;
+  products: Product[];
+};
+
+export function TransactionForm({ initialData, products }: TransactionFormProps) {
   const router = useRouter();
-  const [formData, setFormData] = useState<Transaction>(initialData || {
-    customer: '',
-    items: [],
-    amount: 0,
-    date: new Date().toISOString().split('T')[0],
-    status: 'Processing'
-  });
+  const [formData, setFormData] = useState<Transaction>(
+    initialData || {
+      customer: '',
+      items: [],
+      amount: 0,
+      date: new Date().toISOString().split('T')[0],
+      status: 'Processing',
+    }
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: name === 'amount' ? parseFloat(value) || 0 : value
+      [name]: name === 'amount' ? parseFloat(value) || 0 : value,
     }));
   };
 
   const handleItemChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-    setFormData(prev => ({
+    const selectedOptions = Array.from(e.target.selectedOptions, (option) => option.value);
+    setFormData((prev) => ({
       ...prev,
       items: selectedOptions,
       amount: selectedOptions.reduce((sum, itemId) => {
-        const product = products.find(p => p.id.toString() === itemId);
+        const product = products.find((p) => p.id.toString() === itemId);
         return sum + (product?.price || 0);
-      }, 0)
+      }, 0),
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
+      const response = await fetch('/api/transactions/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
 
-      console.log('Submitting transaction:', formData);
+      const data = await response.json();
 
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      router.push('/admin/transactions');
+      if (data.success) {
+        router.push('/admin/transactions');
+      } else {
+        alert('Gagal menyimpan transaksi: ' + (data.error || ''));
+      }
     } catch (error) {
       console.error('Error:', error);
+      alert('Error saat menyimpan transaksi');
     } finally {
       setIsSubmitting(false);
     }
@@ -133,9 +152,9 @@ export function TransactionForm({ initialData }: { initialData?: Transaction }) 
             className="w-full bg-cyan-900/20 border border-cyan-400/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
             required
           >
-            <option value="Processing">Processing</option>
-            <option value="Completed">Completed</option>
-            <option value="Cancelled">Cancelled</option>
+            <option className="bg-cyan-900 text-white" value="Processing">Processing</option>
+            <option className="bg-cyan-900 text-white" value="Completed">Completed</option>
+            <option className="bg-cyan-900 text-white" value="Cancelled">Cancelled</option>
           </select>
         </div>
       </div>

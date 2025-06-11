@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getFilteredProducts } from '@/lib/query/getProducts';
+import DeleteButton from '@/components/DeleteButton';
 
 export default async function ProductsTable({
   query,
@@ -36,7 +37,7 @@ export default async function ProductsTable({
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-cyan-900/10 rounded-lg overflow-hidden">
                       <img
-                        src={`${product.image}`}
+                        src={product.image}
                         alt={product.name}
                         className="w-full h-full object-cover"
                       />
@@ -57,9 +58,7 @@ export default async function ProductsTable({
                     >
                       Edit
                     </Link>
-                    <button className="px-3 py-1 bg-red-900/20 border border-red-400/30 rounded-lg hover:bg-red-800/30">
-                      Hapus
-                    </button>
+                    <DeleteButton id={product.id} />
                   </div>
                 </td>
               </tr>

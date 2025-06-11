@@ -1,17 +1,19 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
-export default function ProductForm() {
+export default function EditProductForm({ product }: { product: any }) {
+  const router = useRouter()
+
   const [form, setForm] = useState({
-    name: '',
-    image: '',
-    price: '',
-    stock: '',
-    status: '',
-    unggulan: '',
-    kategori: '',
+    name: product.name || '',
+    image: product.image || '',
+    price: product.price?.toString() || '',
+    stock: product.stock?.toString() || '',
+    status: product.status || '',
+    unggulan: product.unggulan || '',
+    kategori: product.kategori || '',
   })
 
   const [loading, setLoading] = useState(false)
@@ -26,40 +28,33 @@ export default function ProductForm() {
     setLoading(true)
     setMessage(null)
 
-    const res = await fetch('/api/products', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    const res = await fetch(`/api/products/${product.id}/edit`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        id: product.id,
         name: form.name,
         image: form.image,
-        price: Number(form.price),
-        stock: Number(form.stock),
+        price: parseFloat(form.price),
+        stock: parseInt(form.stock),
         status: form.status,
         unggulan: form.unggulan || null,
         kategori: form.kategori || null,
       }),
     })
 
-    if (!res.ok) {
-      const errorData = await res.json()
-      console.error('API Error:', errorData)
-      setMessage({ type: 'error', text: errorData.message || '⚠️ Gagal menyimpan produk. Coba lagi nanti.' })
-      setLoading(false)
-      return
+    console.log('Response:', res)
+
+    if (res.ok) {
+      setMessage({ type: 'success', text: '✅ Perubahan berhasil disimpan!' })
+      setTimeout(() => {
+        router.push('/admin/products')
+        router.refresh()
+      }, 1000)
+    } else {
+      setMessage({ type: 'error', text: '⚠️ Gagal menyimpan perubahan. Coba lagi.' })
     }
 
-    setMessage({ type: 'success', text: 'Produk berhasil ditambahkan ke etalase!' })
-    setForm({
-      name: '',
-      image: '',
-      price: '',
-      stock: '',
-      status: '',
-      unggulan: '',
-      kategori: '',
-    })
     setLoading(false)
   }
 
@@ -68,7 +63,7 @@ export default function ProductForm() {
       onSubmit={handleSubmit}
       className="space-y-6 bg-black/40 border border-cyan-400/20 p-8 rounded-xl backdrop-blur-md shadow-md text-white"
     >
-      <h2 className="text-2xl font-bold text-cyan-400">Form Produk</h2>
+      <h2 className="text-2xl font-bold text-cyan-400">Edit Produk</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <input
@@ -160,19 +155,21 @@ export default function ProductForm() {
       )}
 
       <div className="flex justify-end gap-4">
-        <Link
-          href="/admin/products"
-          className="bg-gray-600 hover:bg-gray-500 text-white py-3 px-6 rounded-lg font-medium transition"
+        <button
+          type="button"
+          onClick={() => router.push('/admin/products')}
+          disabled={loading}
+          className="bg-gray-600 hover:bg-gray-500 text-white py-3 px-6 rounded-lg font-semibold transition"
         >
           Batal
-        </Link>
+        </button>
 
         <button
           type="submit"
           disabled={loading}
           className="bg-cyan-600 hover:bg-cyan-500 text-white py-3 px-6 rounded-lg font-semibold transition"
         >
-          {loading ? 'Menyimpan...' : 'Simpan Produk'}
+          {loading ? 'Menyimpan...' : 'Simpan Perubahan'}
         </button>
       </div>
     </form>
