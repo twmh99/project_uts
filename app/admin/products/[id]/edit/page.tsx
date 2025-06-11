@@ -6,8 +6,12 @@ type PageProps = {
   };
 };
 
-export default async function PageEdit({ params }: PageProps) {
+export default async function pageEdit({ params }: PageProps) {
   const id = parseInt(params.id);
 
-  return <EditPage id={id} />;
+  return (
+    <div className="p-8 max-w-xl mx-auto">
+      <EditPage id={id} />
+    </div>
+  );
 }
