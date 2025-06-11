@@ -1,12 +1,10 @@
 import EditPage from "@/components/editproduct";
 
-type PageProps = {
-  params: {
-    id: string;
-  };
-};
-
-export default function pageEdit({ params }: PageProps) {
+export default function pageEdit({
+  params,
+}: {
+  params: { id: string };
+}) {
   const id = parseInt(params.id);
 
   return (
