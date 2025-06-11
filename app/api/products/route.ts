@@ -4,11 +4,11 @@ import { db } from '@/lib/db';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, image, price, stock, status, unggulan, kategori } = body;
+    const { name, image, price, stock, status, unggulan, kategori, description } = body;
 
     const query = `
-      INSERT INTO products (name, image, price, stock, status, unggulan, kategori)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      INSERT INTO products (name, image, price, stock, status, unggulan, kategori, decription)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *;
     `;
     const values = [
@@ -19,6 +19,7 @@ export async function POST(req: Request) {
       status,
       unggulan || null,
       kategori || null,
+      description
     ];
 
     const result = await db.query(query, values);

@@ -12,15 +12,19 @@ export default function EditProductForm({ product }: { product: any }) {
     price: product.price?.toString() || '',
     stock: product.stock?.toString() || '',
     status: product.status || '',
-    unggulan: product.unggulan || '',
+    unggulan: product.unggulan?.toString() || 'false',
     kategori: product.kategori || '',
+    description: product.description || '',
   })
 
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target
+    setForm(prev => ({ ...prev, [name]: value }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -28,22 +32,36 @@ export default function EditProductForm({ product }: { product: any }) {
     setLoading(true)
     setMessage(null)
 
+    const price = parseFloat(form.price)
+    const stock = parseInt(form.stock)
+
+    if (isNaN(price) || isNaN(stock)) {
+      setMessage({ type: 'error', text: '⚠️ Harga dan stok harus berupa angka yang valid.' })
+      setLoading(false)
+      return
+    }
+
+    if (!form.description.trim()) {
+      setMessage({ type: 'error', text: '⚠️ Deskripsi tidak boleh kosong.' })
+      setLoading(false)
+      return
+    }
+
     const res = await fetch(`/api/products/${product.id}/edit`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         id: product.id,
-        name: form.name,
-        image: form.image,
-        price: parseFloat(form.price),
-        stock: parseInt(form.stock),
+        name: form.name.trim(),
+        image: form.image.trim(),
+        price,
+        stock,
         status: form.status,
-        unggulan: form.unggulan || null,
+        unggulan: form.unggulan === 'true',
         kategori: form.kategori || null,
+        description: form.description.trim(),
       }),
     })
-
-    console.log('Response:', res)
 
     if (res.ok) {
       setMessage({ type: 'success', text: '✅ Perubahan berhasil disimpan!' })
@@ -52,7 +70,11 @@ export default function EditProductForm({ product }: { product: any }) {
         router.refresh()
       }, 1000)
     } else {
-      setMessage({ type: 'error', text: '⚠️ Gagal menyimpan perubahan. Coba lagi.' })
+      const err = await res.json()
+      setMessage({
+        type: 'error',
+        text: err?.error || '⚠️ Gagal menyimpan perubahan. Coba lagi.',
+      })
     }
 
     setLoading(false)
@@ -132,12 +154,23 @@ export default function EditProductForm({ product }: { product: any }) {
           <option value="Accessories">Accessories</option>
         </select>
 
-        <input
-          type="text"
+        <select
           name="unggulan"
-          placeholder="Unggulan (opsional)"
           value={form.unggulan}
           onChange={handleChange}
+          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
+        >
+          <option value="false">Bukan Produk Unggulan</option>
+          <option value="true">Produk Unggulan</option>
+        </select>
+
+        <textarea
+          name="description"
+          placeholder="Deskripsi singkat"
+          value={form.description}
+          onChange={handleChange}
+          required
+          rows={3}
           className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
         />
       </div>

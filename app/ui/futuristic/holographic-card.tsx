@@ -5,6 +5,12 @@ import Image from 'next/image';
 import { useCart } from '../../context/cart-context';
 import { Notification } from 'components/notification';
 
+type Product = {
+  id: number; name: string; image: string;
+  price: number; description: string; 
+  unggulan?: boolean;
+};
+
 export function HolographicCard({ product }: { product: any }) {
   const [isHovered, setIsHovered] = useState(false);
   const [showNotification, setShowNotification] = useState(false);

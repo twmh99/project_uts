@@ -7,15 +7,29 @@ export async function PUT(req: NextRequest) {
   try {
     const body = await req.json()
 
-    const { id, name, image, price, stock, status, unggulan, kategori } = body
+    const {
+      id,
+      name,
+      image,
+      price,
+      stock,
+      status,
+      unggulan,
+      kategori,
+      description
+    } = body
 
+    // Validasi input
     if (
       !id ||
       !name ||
       !image ||
       typeof price !== 'number' ||
       typeof stock !== 'number' ||
-      !status
+      !status ||
+      typeof unggulan !== 'boolean' ||
+      !kategori ||
+      !description
     ) {
       return NextResponse.json(
         { error: 'Data tidak lengkap atau format salah.' },
@@ -33,10 +47,11 @@ export async function PUT(req: NextRequest) {
         stock = $4, 
         status = $5, 
         unggulan = $6, 
-        kategori = $7
-      WHERE id = $8
+        kategori = $7, 
+        description = $8
+      WHERE id = $9
     `,
-      [name, image, price, stock, status, unggulan, kategori, id]
+      [name, image, price, stock, status, unggulan, kategori, description, id]
     )
 
     return NextResponse.json({ message: 'Produk berhasil diperbarui.' })

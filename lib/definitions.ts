@@ -1,10 +1,11 @@
-// lib/definitions.ts
 export type Product = {
   id: number;
   name: string;
   image: string;
   price: number;
   stock: number;
+  status: string;     
   unggulan: boolean;
-  description: string;
+  kategori: string | null;
+  description: string;   
 };
