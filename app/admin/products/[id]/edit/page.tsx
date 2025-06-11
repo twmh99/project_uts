@@ -1,12 +1,7 @@
+// app/admin/products/[id]/edit/page.tsx
 import EditPage from "@/components/editproduct";
 
-type PageProps = {
-  params: {
-    id: string;
-  };
-};
-
-export default function Page({ params }: PageProps) {
+export default async function pageEdit({ params }: any) {
   const id = parseInt(params.id);
 
   return (
