@@ -12,7 +12,7 @@ export default function EditProductForm({ product }: { product: any }) {
     price: product.price?.toString() || '',
     stock: product.stock?.toString() || '',
     status: product.status || '',
-    unggulan: product.unggulan?.toString() || 'false',
+    unggulan: product.unggulan?.toString() || 'x',
     kategori: product.kategori || '',
     description: product.description || '',
   })
@@ -57,7 +57,7 @@ export default function EditProductForm({ product }: { product: any }) {
         price,
         stock,
         status: form.status,
-        unggulan: form.unggulan === 'true',
+        unggulan: form.unggulan === 'y',
         kategori: form.kategori || null,
         description: form.description.trim(),
       }),
@@ -160,8 +160,8 @@ export default function EditProductForm({ product }: { product: any }) {
           onChange={handleChange}
           className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
         >
-          <option value="false">Bukan Produk Unggulan</option>
-          <option value="true">Produk Unggulan</option>
+          <option value="x">Bukan Produk Unggulan</option>
+          <option value="y">Produk Unggulan</option>
         </select>
 
         <textarea
