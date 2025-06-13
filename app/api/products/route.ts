@@ -1,12 +1,29 @@
 import { NextResponse } from 'next/server'
-import { db } from '@/lib/db' // Pastikan db ini adalah instance dari PostgreSQL client (contoh: pg.Pool)
+import { db } from '@/lib/db'
+import { getFilteredByCategoryAndPrice } from '@/lib/query/getProducts'
+
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url)
+    const maxPrice = parseFloat(searchParams.get('maxPrice') || '9999999')
+    const categories = searchParams.getAll('categories') // bisa banyak
+
+    const products = await getFilteredByCategoryAndPrice(categories, maxPrice)
+    return NextResponse.json(products)
+  } catch (error) {
+    console.error('GET error:', error)
+    return NextResponse.json(
+      { success: false, message: 'Gagal mengambil produk.' },
+      { status: 500 }
+    )
+  }
+}
 
 export async function POST(req: Request) {
   try {
     const body = await req.json()
     const { name, image, price, stock, status, unggulan, kategori, description } = body
 
-    // Validasi sederhana
     if (!name || !image || !price || !stock || !status) {
       return NextResponse.json(
         { success: false, message: 'Nama, gambar, harga, stok, dan status wajib diisi.' },

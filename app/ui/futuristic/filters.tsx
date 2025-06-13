@@ -1,8 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export function FilterPanel() {
+type Product = {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  kategori: string;
+};
+
+type Props = {
+  onFilter: (filteredProducts: Product[]) => void;
+};
+
+export function FilterPanel({ onFilter }: Props) {
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
@@ -22,32 +34,52 @@ export function FilterPanel() {
     );
   };
 
+  const fetchFilteredProducts = async () => {
+    const params = new URLSearchParams();
+    params.append('maxPrice', priceRange[1].toString());
+    selectedCategories.forEach(cat => params.append('categories', cat));
+
+    try {
+      const res = await fetch(`/api/products?${params.toString()}`);
+      const data = await res.json();
+      onFilter(data);
+    } catch (error) {
+      console.error('Gagal fetch produk terfilter:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFilteredProducts();
+  }, [priceRange, selectedCategories]);
+
   return (
     <div className="border border-cyan-400/20 rounded-xl p-6 bg-black/50 backdrop-blur-md">
       <h3 className="text-xl font-bold mb-6 text-cyan-400">Filter</h3>
-      
+
       <div className="mb-8">
-        <h4 className="font-medium mb-4">Range Harga</h4>
+        <h4 className="font-medium mb-4 text-white">Range Harga</h4>
         <div className="px-2">
           <input
             type="range"
             min="0"
             max="1000"
             value={priceRange[1]}
-            onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
+            onChange={(e) =>
+              setPriceRange([priceRange[0], parseInt(e.target.value)])
+            }
             className="w-full accent-cyan-500"
           />
-          <div className="flex justify-between mt-2 text-sm">
+          <div className="flex justify-between mt-2 text-sm text-white">
             <span>${priceRange[0]}</span>
             <span>${priceRange[1]}</span>
           </div>
         </div>
       </div>
-      
+
       <div>
-        <h4 className="font-medium mb-4">Kategori</h4>
+        <h4 className="font-medium mb-4 text-white">Kategori</h4>
         <div className="space-y-2">
-          {categories.map(category => (
+          {categories.map((category) => (
             <label key={category.id} className="flex items-center space-x-3">
               <input
                 type="checkbox"
@@ -55,7 +87,7 @@ export function FilterPanel() {
                 onChange={() => toggleCategory(category.id)}
                 className="form-checkbox h-4 w-4 text-cyan-500 rounded border-cyan-400/50 focus:ring-cyan-500"
               />
-              <span>{category.name}</span>
+              <span className="text-white">{category.name}</span>
             </label>
           ))}
         </div>

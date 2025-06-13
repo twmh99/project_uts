@@ -16,9 +16,9 @@ export function Footer() {
                         <h4 className="text-lg font-bold mb-4 text-cyan-400">Tautan Cepat</h4>
                         <ul className="space-y-2 text-cyan-300">
                             <li><a href="/" className="hover:text-cyan-400">Beranda</a></li>
-                            <li><a href="/catalogue" className="hover:text-cyan-400">Produk</a></li>
-                            <li><a href="/about" className="hover:text-cyan-400">Tentang Kami</a></li>
-                            <li><a href="/contact" className="hover:text-cyan-400">Kontak</a></li>
+                            <li><a href="/main/catalogue" className="hover:text-cyan-400">Produk</a></li>
+                            <li><a href="/main/about" className="hover:text-cyan-400">Tentang Kami</a></li>
+                            <li><a href="/main/contact" className="hover:text-cyan-400">Kontak</a></li>
                         </ul>
                     </div>
 

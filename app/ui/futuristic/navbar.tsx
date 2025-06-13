@@ -6,8 +6,8 @@ import { FiHome, FiShoppingBag, FiUser, FiInfo, FiShoppingCart, FiDollarSign, Fi
 import { useCart } from '../../context/cart-context';
 
 const customerNavItems = [
-  { name: 'Beranda', path: '/main/home', icon: <FiHome /> },      // Changed from '/'
-  { name: 'Katalog', path: '/main/catalogue', icon: <FiShoppingBag /> }, // Changed from '/catalogue'
+  { name: 'Beranda', path: '/main/home', icon: <FiHome /> },     
+  { name: 'Katalog', path: '/main/catalogue', icon: <FiShoppingBag /> }, 
   { name: 'Tentang', path: '/main/about', icon: <FiInfo /> },
   { name: 'Kontak', path: '/main/contact', icon: <FiMail /> },
   { name: 'Profil', path: '/main/profile', icon: <FiUser /> },
