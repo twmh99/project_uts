@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
 
   if (!id) {
     return NextResponse.json({ error: 'ID tidak ditemukan' }, { status: 400 });

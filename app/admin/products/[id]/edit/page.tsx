@@ -5,13 +5,12 @@ import { notFound } from "next/navigation";
 
 type PageProps = {
   params: Promise<{
-    id: string;
+    id: string
   }>;
 };
 
 export default async function Page({ params }: PageProps) {
   const id = await params.then((p) => parseInt(p.id, 10));
-  console.log(id);
 
   if (isNaN(id)) {
     notFound();
