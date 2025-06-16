@@ -11,7 +11,6 @@ export default async function EditPage({ id }: { id: number }) {
 
   return (
     <div className="p-8 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Edit Produk</h1>
       <EditProductForm product={product} />
     </div>
   );

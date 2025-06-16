@@ -12,11 +12,12 @@ export default function EditProductForm({ product }: { product: any }) {
     price: product.price?.toString() || '',
     stock: product.stock?.toString() || '',
     status: product.status || '',
-    unggulan: product.unggulan?.toString() || 'x',
+    unggulan: product.unggulan ? 'y' : 'x',
     kategori: product.kategori || '',
     description: product.description || '',
   })
 
+  const [errors, setErrors] = useState<{ [key: string]: string }>({})
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
@@ -25,6 +26,26 @@ export default function EditProductForm({ product }: { product: any }) {
   ) => {
     const { name, value } = e.target
     setForm(prev => ({ ...prev, [name]: value }))
+    setErrors(prev => ({ ...prev, [name]: '' }))
+  }
+
+  const validate = () => {
+    const newErrors: { [key: string]: string } = {}
+    if (!form.name.trim()) newErrors.name = 'Nama produk wajib diisi.'
+    if (!form.image.trim()) newErrors.image = 'URL gambar wajib diisi.'
+
+    const price = parseFloat(form.price)
+    if (isNaN(price)) newErrors.price = 'Harga harus berupa angka.'
+    else if (price < 0) newErrors.price = 'Harga tidak boleh negatif.'
+
+    const stock = parseInt(form.stock)
+    if (isNaN(stock)) newErrors.stock = 'Stok harus berupa angka.'
+    else if (stock < 0) newErrors.stock = 'Stok tidak boleh negatif.'
+
+    if (!form.status) newErrors.status = 'Status harus dipilih.'
+    if (!form.unggulan) newErrors.unggulan = 'Unggulan harus dipilih.'
+    if (!form.description.trim()) newErrors.description = 'Deskripsi wajib diisi.'
+    return newErrors
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,152 +53,172 @@ export default function EditProductForm({ product }: { product: any }) {
     setLoading(true)
     setMessage(null)
 
-    const price = parseFloat(form.price)
-    const stock = parseInt(form.stock)
-
-    if (isNaN(price) || isNaN(stock)) {
-      setMessage({ type: 'error', text: '⚠️ Harga dan stok harus berupa angka yang valid.' })
+    const validationErrors = validate()
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors)
       setLoading(false)
       return
     }
 
-    if (!form.description.trim()) {
-      setMessage({ type: 'error', text: '⚠️ Deskripsi tidak boleh kosong.' })
-      setLoading(false)
-      return
-    }
-
-    const res = await fetch(`/api/products/${product.id}/edit`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id: product.id,
-        name: form.name.trim(),
-        image: form.image.trim(),
-        price,
-        stock,
-        status: form.status,
-        unggulan: form.unggulan === 'y',
-        kategori: form.kategori || null,
-        description: form.description.trim(),
-      }),
-    })
-
-    if (res.ok) {
-      setMessage({ type: 'success', text: '✅ Perubahan berhasil disimpan!' })
-      setTimeout(() => {
-        router.push('/admin/products')
-        router.refresh()
-      }, 1000)
-    } else {
-      const err = await res.json()
-      setMessage({
-        type: 'error',
-        text: err?.error || '⚠️ Gagal menyimpan perubahan. Coba lagi.',
+    try {
+      const res = await fetch(`/api/products/${product.id}/edit`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: product.id,
+          name: form.name.trim(),
+          image: form.image.trim(),
+          price: parseFloat(form.price),
+          stock: parseInt(form.stock),
+          status: form.status,
+          unggulan: form.unggulan === 'y',
+          kategori: form.kategori || null,
+          description: form.description.trim(),
+        }),
       })
+
+      if (res.ok) {
+        setMessage({ type: 'success', text: '✅ Perubahan berhasil disimpan!' })
+        setTimeout(() => {
+          router.push('/admin/products')
+          router.refresh()
+        }, 1000)
+      } else {
+        const err = await res.json()
+        setMessage({ type: 'error', text: err?.error || 'Gagal menyimpan perubahan' })
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'Terjadi kesalahan jaringan.' })
     }
 
     setLoading(false)
   }
 
+  const inputClass = (field: string) =>
+    `bg-black/60 border ${
+      errors[field] ? 'border-red-500' : 'border-cyan-400/20'
+    } p-3 rounded-lg w-full focus:outline-none focus:ring-2 ${
+      errors[field] ? 'focus:ring-red-400' : 'focus:ring-cyan-400'
+    } transition`
+
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 bg-black/40 border border-cyan-400/20 p-8 rounded-xl backdrop-blur-md shadow-md text-white"
+      className="space-y-6 bg-black/40 border border-cyan-400/20 p-8 rounded-xl backdrop-blur-md text-white max-w-5xl mx-auto"
     >
-      <h2 className="text-2xl font-bold text-cyan-400">Edit Produk</h2>
+      <h2 className="text-3xl font-bold text-cyan-400 mb-6">Edit Produk</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <input
-          type="text"
-          name="name"
-          placeholder="Nama Produk"
-          value={form.name}
-          onChange={handleChange}
-          required
-          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
-        />
+        <div>
+          <input
+            type="text"
+            name="name"
+            placeholder="Nama Produk"
+            value={form.name}
+            onChange={handleChange}
+            className={inputClass('name')}
+          />
+          {errors.name && <p className="text-sm text-red-400 mt-1">{errors.name}</p>}
+        </div>
 
-        <input
-          type="text"
-          name="image"
-          placeholder="URL Gambar"
-          value={form.image}
-          onChange={handleChange}
-          required
-          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
-        />
+        <div>
+          <input
+            type="text"
+            name="image"
+            placeholder="URL Gambar"
+            value={form.image}
+            onChange={handleChange}
+            className={inputClass('image')}
+          />
+          {errors.image && <p className="text-sm text-red-400 mt-1">{errors.image}</p>}
+        </div>
 
-        <input
-          type="number"
-          name="price"
-          placeholder="Harga"
-          value={form.price}
-          onChange={handleChange}
-          required
-          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
-        />
+        <div>
+          <input
+            type="number"
+            name="price"
+            min={0}
+            placeholder="Harga"
+            value={form.price}
+            onChange={handleChange}
+            className={inputClass('price')}
+          />
+          {errors.price && <p className="text-sm text-red-400 mt-1">{errors.price}</p>}
+        </div>
 
-        <input
-          type="number"
-          name="stock"
-          placeholder="Stok"
-          value={form.stock}
-          onChange={handleChange}
-          required
-          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
-        />
+        <div>
+          <input
+            type="number"
+            name="stock"
+            min={0}
+            placeholder="Stok"
+            value={form.stock}
+            onChange={handleChange}
+            className={inputClass('stock')}
+          />
+          {errors.stock && <p className="text-sm text-red-400 mt-1">{errors.stock}</p>}
+        </div>
 
-        <select
-          name="status"
-          value={form.status}
-          onChange={handleChange}
-          required
-          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
-        >
-          <option value="">Pilih Status</option>
-          <option value="tersedia">Tersedia</option>
-          <option value="habis">Habis</option>
-        </select>
+        <div>
+          <select
+            name="status"
+            value={form.status}
+            onChange={handleChange}
+            className={inputClass('status')}
+          >
+            <option value="">Pilih Status</option>
+            <option value="tersedia">Tersedia</option>
+            <option value="habis">Habis</option>
+          </select>
+          {errors.status && <p className="text-sm text-red-400 mt-1">{errors.status}</p>}
+        </div>
 
-        <select
-          name="kategori"
-          value={form.kategori}
-          onChange={handleChange}
-          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
-        >
-          <option value="">Pilih Kategori</option>
-          <option value="Wearables">Wearables</option>
-          <option value="Robotics">Robotics</option>
-          <option value="Computing">Computing</option>
-          <option value="Audio">Audio</option>
-          <option value="Accessories">Accessories</option>
-        </select>
+        <div>
+          <select
+            name="kategori"
+            value={form.kategori}
+            onChange={handleChange}
+            className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
+          >
+            <option value="">Pilih Kategori</option>
+            <option value="Wearables">Wearables</option>
+            <option value="Robotics">Robotics</option>
+            <option value="Computing">Computing</option>
+            <option value="Audio">Audio</option>
+            <option value="Accessories">Accessories</option>
+          </select>
+        </div>
 
-        <select
-          name="unggulan"
-          value={form.unggulan}
-          onChange={handleChange}
-          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
-        >
-          <option value="x">Bukan Produk Unggulan</option>
-          <option value="y">Produk Unggulan</option>
-        </select>
+        <div className="md:col-span-2">
+          <select
+            name="unggulan"
+            value={form.unggulan}
+            onChange={handleChange}
+            className={inputClass('unggulan')}
+          >
+            <option value="">Pilih Produk Unggulan</option>
+            <option value="y">Produk Unggulan</option>
+            <option value="x">Bukan Produk Unggulan</option>
+          </select>
+          {errors.unggulan && <p className="text-sm text-red-400 mt-1">{errors.unggulan}</p>}
+        </div>
 
-        <textarea
-          name="description"
-          placeholder="Deskripsi singkat"
-          value={form.description}
-          onChange={handleChange}
-          required
-          rows={3}
-          className="bg-black/60 border border-cyan-400/20 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
-        />
+        <div className="md:col-span-2">
+          <textarea
+            name="description"
+            placeholder="Deskripsi singkat"
+            value={form.description}
+            onChange={handleChange}
+            rows={4}
+            className={inputClass('description')}
+          />
+          {errors.description && <p className="text-sm text-red-400 mt-1">{errors.description}</p>}
+        </div>
       </div>
 
       {message && (
         <p
-          className={`text-sm font-medium px-4 py-2 rounded-lg ${
+          className={`text-sm font-medium px-4 py-2 rounded-lg mt-2 ${
             message.type === 'success'
               ? 'bg-green-600/20 text-green-300 border border-green-500'
               : 'bg-red-600/20 text-red-300 border border-red-500'
@@ -187,7 +228,7 @@ export default function EditProductForm({ product }: { product: any }) {
         </p>
       )}
 
-      <div className="flex justify-end gap-4">
+      <div className="flex justify-end gap-4 pt-6">
         <button
           type="button"
           onClick={() => router.push('/admin/products')}

@@ -62,6 +62,7 @@ export function FloatingNav() {
     { name: 'Dashboard', path: '/admin/dashboard', icon: <FiHome /> },
     { name: 'Produk', path: '/admin/products', icon: <FiShoppingBag /> },
     { name: 'Transaksi', path: '/admin/transactions', icon: <FiDollarSign /> },
+    { name: 'Profil', path: '/admin/profile', icon: <FiUser /> },
   ];
 
   const navItems = isAdminPage ? adminItems : customerItems;

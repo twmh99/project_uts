@@ -3,14 +3,20 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function DeleteButton({ id }: { id: number }) {
+export default function DeleteButton({
+  id,
+  type = 'product',
+}: {
+  id: number;
+  type?: 'product' | 'transaction';
+}) {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
     setLoading(true);
-    const res = await fetch(`/api/products/${id}/delete`, {
+    const res = await fetch(`/api/${type}s/${id}/delete`, {
       method: 'DELETE',
     });
 
@@ -18,7 +24,7 @@ export default function DeleteButton({ id }: { id: number }) {
       setShowModal(false);
       router.refresh();
     } else {
-      alert('❌ Gagal menghapus produk. Coba lagi.');
+      alert(`❌ Gagal menghapus ${type === 'product' ? 'produk' : 'transaksi'}.`);
     }
     setLoading(false);
   };
@@ -37,7 +43,7 @@ export default function DeleteButton({ id }: { id: number }) {
           <div className="bg-gradient-to-br from-red-950 to-red-900 border border-red-500/30 rounded-2xl p-6 shadow-xl text-white w-[90%] max-w-md animate-fade-in">
             <h2 className="text-lg font-bold mb-2">Konfirmasi Penghapusan</h2>
             <p className="text-sm text-red-300 mb-4">
-              Apakah kamu yakin ingin menghapus produk ini? Tindakan ini tidak dapat dibatalkan.
+              Apakah kamu yakin ingin menghapus {type === 'product' ? 'produk' : 'transaksi'} ini?
             </p>
             <div className="flex justify-end space-x-2">
               <button

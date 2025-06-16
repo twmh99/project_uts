@@ -5,6 +5,7 @@ import { ParticleBackground } from '@/app/ui/futuristic/particles'
 import { FilterPanel } from '@/app/ui/futuristic/filters'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
+import ProductGridSkeleton from '@/app/ui/futuristic/product-grid-skeleton'
 
 export default function CataloguePage() {
   const [products, setProducts] = useState<any[]>([])
@@ -75,13 +76,13 @@ export default function CataloguePage() {
               <p className="text-cyan-400 text-sm ml-4">Total Produk: {total}</p>
             </div>
 
-            {loading ? (
-              <p className="text-white text-center text-lg mt-10">Memuat...</p>
-            ) : products.length === 0 ? (
-              <p className="text-white text-center text-lg mt-10">Produk tidak ditemukan.</p>
-            ) : (
-              <ProductGrid products={products} query={q} />
-            )}
+{loading ? (
+  <ProductGridSkeleton />
+) : products.length === 0 ? (
+  <p className="text-white text-center text-lg mt-10">Produk tidak ditemukan.</p>
+) : (
+  <ProductGrid products={products} query={q} />
+)}
 
             {/* Pagination */}
             <div className="mt-8 flex justify-center gap-2">
