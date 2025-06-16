@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 
-// Utility function to generate pagination numbers
+// fungsi generatePagination untuk membuat daftar halaman
 function generatePagination(currentPage: number, totalPages: number) {
   if (totalPages <= 7) {
     return Array.from({ length: totalPages }, (_, i) => i + 1);

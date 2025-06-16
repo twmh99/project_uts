@@ -25,7 +25,7 @@ export default function CartPage() {
           <div className="text-center py-12">
             <h3 className="text-2xl font-bold mb-4 text-cyan-400">Keranjang Anda kosong</h3>
             <p className="mb-6">Jelajahi katalog kami untuk menemukan produk-produk luar biasa!</p>
-            <HolographicButton href="/catalogue">
+            <HolographicButton href="/main/catalogue">
               Jelajahi Produk
             </HolographicButton>
           </div>

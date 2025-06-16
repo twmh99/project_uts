@@ -18,7 +18,9 @@ export default function ProductForm() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
@@ -27,42 +29,60 @@ export default function ProductForm() {
     setLoading(true)
     setMessage(null)
 
-    const res = await fetch('/api/products', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ...form,
-        price: Number(form.price),
-        stock: Number(form.stock),
-        unggulan: form.unggulan || null,
-        kategori: form.kategori || null,
-        description: form.description || '',
-      }),
-    })
+    try {
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...form,
+          price: Number(form.price),
+          stock: Number(form.stock),
+          unggulan: form.unggulan || null,
+          kategori: form.kategori || null,
+          description: form.description || '',
+        }),
+      })
 
-    const data = await res.json()
+      let data: any = {}
+      try {
+        data = await res.json()
+      } catch {
+        throw new Error('Respon dari server bukan JSON yang valid.')
+      }
 
-    if (!res.ok) {
-      console.error('API Error:', data)
-      setMessage({ type: 'error', text: data.message || '⚠️ Gagal menyimpan produk. Coba lagi nanti.' })
+      if (!res.ok) {
+        throw new Error(data.message || '⚠️ Gagal menyimpan produk. Coba lagi nanti.')
+      }
+
+      setMessage({ type: 'success', text: 'Produk berhasil ditambahkan ke etalase!' })
+      setForm({
+        name: '',
+        image: '',
+        price: '',
+        stock: '',
+        status: '',
+        unggulan: '',
+        kategori: '',
+        description: '',
+      })
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : typeof err === 'string'
+          ? err
+          : '⚠️ Terjadi kesalahan. Silakan coba lagi.'
+
+      console.error('API Error:', errorMessage)
+      setMessage({
+        type: 'error',
+        text: errorMessage,
+      })
+    } finally {
       setLoading(false)
-      return
     }
-
-    setMessage({ type: 'success', text: 'Produk berhasil ditambahkan ke etalase!' })
-    setForm({
-      name: '',
-      image: '',
-      price: '',
-      stock: '',
-      status: '',
-      unggulan: '',
-      kategori: '',
-      description: '',
-    })
-    setLoading(false)
   }
 
   return (
