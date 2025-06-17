@@ -16,3 +16,4 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     return NextResponse.json({ error: 'Gagal menghapus produk' }, { status: 500 });
   }
 }
+
