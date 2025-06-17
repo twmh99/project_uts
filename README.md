@@ -8,4 +8,4 @@ Password: 12345
 
 Link GitHub: https://github.com/twmh99/project_uts.git
 
-Link Vercel: https://project-uts-1.vercel.app/
+Link Vercel: https://siweb-beige.vercel.app/
