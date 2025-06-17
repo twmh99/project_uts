@@ -1,16 +1,19 @@
-// api/transactions/[id]/delete/route.ts
+// app/api/transactions/[id]/delete/route.ts
 import { db } from '@/lib/db';
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
-  const id = Number(params.id);
+export async function DELETE(request: NextRequest) {
+  const { pathname } = new URL(request.url);
+  const id = pathname.split('/').at(-2); // Ambil ID dari path: /api/transactions/[id]/delete
 
-  if (!id || isNaN(id)) {
+  const parsedId = Number(id);
+
+  if (!parsedId || isNaN(parsedId)) {
     return NextResponse.json({ error: 'ID tidak valid' }, { status: 400 });
   }
 
   try {
-    await db.query('DELETE FROM transactions WHERE id = $1', [id]);
+    await db.query('DELETE FROM transactions WHERE id = $1', [parsedId]);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Gagal menghapus transaksi:', error);
