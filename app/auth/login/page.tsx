@@ -11,17 +11,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const ADMIN_CREDENTIALS = {
-    username: 'admin123',
-    password: '12345'
-  };
-
-  const USER_CREDENTIALS = {
-    username: 'user123',
-    password: '12345'
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!username || !password) {
@@ -29,16 +19,37 @@ export default function LoginPage() {
       return;
     }
 
-    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-      localStorage.setItem('isAdminAuthenticated', 'true');
-      localStorage.removeItem('isUserAuthenticated');
-      router.push('/admin/dashboard');
-    } else if (username === USER_CREDENTIALS.username && password === USER_CREDENTIALS.password) {
-      localStorage.setItem('isUserAuthenticated', 'true');
-      localStorage.removeItem('isAdminAuthenticated');
-      router.push('/');
-    } else {
-      setError('Username atau password salah');
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || 'Username atau password salah');
+        return;
+      }
+
+      const user = data.user;
+
+      // Simpan user info dan auth state
+      localStorage.setItem('user', JSON.stringify(user));
+
+      if (user.role === 'admin') {
+        localStorage.setItem('isAdminAuthenticated', 'true');
+        localStorage.removeItem('isUserAuthenticated');
+        router.push('/admin/dashboard');
+      } else {
+        localStorage.setItem('isUserAuthenticated', 'true');
+        localStorage.removeItem('isAdminAuthenticated');
+        router.push('/');
+      }
+    } catch (err) {
+      console.error('Login Error:', err);
+      setError('⚠️ Gagal melakukan login. Silakan coba lagi.');
     }
   };
 
@@ -50,7 +61,7 @@ export default function LoginPage() {
           <h2 className="text-3xl font-bold mb-8 text-center text-cyan-400 neon-text">
             Masuk ke FutureTech
           </h2>
-          
+
           {error && (
             <div className="mb-4 p-3 bg-red-900/50 border border-red-400/50 rounded-lg text-red-300">
               {error}
@@ -62,6 +73,7 @@ export default function LoginPage() {
               <label className="block text-cyan-300 mb-2">Username</label>
               <input
                 type="text"
+                name="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full bg-cyan-900/20 border border-cyan-400/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
@@ -73,6 +85,7 @@ export default function LoginPage() {
               <label className="block text-cyan-300 mb-2">Password</label>
               <input
                 type="password"
+                name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-cyan-900/20 border border-cyan-400/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"

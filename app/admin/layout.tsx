@@ -1,8 +1,9 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { FloatingNav } from '@/app/ui/futuristic/navbar';
 import { ParticleBackground } from '@/app/ui/futuristic/particles';
-import { useRouter } from 'next/navigation';
 
 export default function AdminLayout({
   children,
@@ -10,15 +11,30 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const isAuthenticated = typeof window !== 'undefined'
-    ? localStorage.getItem('isAdminAuthenticated') === 'true'
-    : false;
+  useEffect(() => {
+    const checkAuth = () => {
+      const auth = localStorage.getItem('isAdminAuthenticated') === 'true';
+      setIsAuthenticated(auth);
+      if (!auth) {
+        router.push('/auth/login');
+      }
+      setLoading(false);
+    };
+    checkAuth();
+  }, [router]);
 
-  if (!isAuthenticated) {
-    router.push('/auth/login');
-    return <div>Redirecting to login...</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-cyan-400 text-lg">
+        Memeriksa akses admin...
+      </div>
+    );
   }
+
+  if (!isAuthenticated) return null; // akan redirect
 
   return (
     <div className="min-h-screen">

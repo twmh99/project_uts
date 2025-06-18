@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { getFilteredProducts, getProductsPages } from '@/lib/query/getProducts';
+import { getFilteredProducts, getProducts, getProductsPages } from '@/lib/query/getProducts';
 import Search from '@/app/ui/admin/search';
 import Pagination from '@/app/ui/admin/pagination';
 import ProductsTable from '@/app/ui/admin/products-table';
@@ -16,6 +16,8 @@ export default async function AdminProductsPage(props: {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
   const totalPages = await getProductsPages(query);
+  const allProducts = await getProducts(); 
+  const total = allProducts.length;
 
   return (
     <div>
@@ -34,6 +36,8 @@ export default async function AdminProductsPage(props: {
         <div className="text-sm text-cyan-400/60">
           {query && `Hasil pencarian: "${query}"`}
         </div>
+        {/* Tampilkan total produk */}
+        <p className="text-cyan-400 text-sm ml-4">Total Produk: {total}</p>
       </div>
 
       <Suspense key={query + currentPage} fallback={<ProductsTableSkeleton />}>

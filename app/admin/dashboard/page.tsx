@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 export default async function AdminDashboardPage() {
   const products = await getProducts();
   const transactions = await getRecentTransactions();
-  const users = await getUsers();
+  const users = await getUsers(); // dari tabel customers
 
   const totalProducts = products.length;
   const totalTransactions = transactions.length;
@@ -25,6 +25,7 @@ export default async function AdminDashboardPage() {
     <div>
       <h2 className="text-3xl font-bold mb-8 text-cyan-400">Dashboard Admin</h2>
 
+      {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
         {stats.map((stat, index) => (
           <Card key={index}>
@@ -37,7 +38,9 @@ export default async function AdminDashboardPage() {
         ))}
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8">
+      {/* Transaksi Terbaru dan Produk Populer */}
+      <div className="grid md:grid-cols-2 gap-8 mb-12">
+        {/* Transaksi */}
         <div className="bg-black/50 border border-cyan-400/20 rounded-xl p-6">
           <h3 className="text-xl font-bold mb-6 text-cyan-400">Transaksi Terbaru</h3>
 
@@ -66,6 +69,7 @@ export default async function AdminDashboardPage() {
           </Link>
         </div>
 
+        {/* Produk Populer */}
         <div className="bg-black/50 border border-cyan-400/20 rounded-xl p-6">
           <h3 className="text-xl font-bold mb-6 text-cyan-400">Produk Terpopuler</h3>
 
@@ -93,6 +97,32 @@ export default async function AdminDashboardPage() {
           >
             Lihat Semua Produk →
           </Link>
+        </div>
+      </div>
+
+      {/* Daftar Customer */}
+      <div className="bg-black/50 border border-cyan-400/20 rounded-xl p-6">
+        <h3 className="text-xl font-bold mb-6 text-cyan-400">Daftar Customer</h3>
+
+        <div className="overflow-x-auto">
+          <table className="w-full table-auto border-collapse text-sm">
+            <thead className="bg-cyan-900/10 text-cyan-300">
+              <tr>
+                <th className="px-4 py-2 text-left">Nama</th>
+                <th className="px-4 py-2 text-left">Email</th>
+                <th className="px-4 py-2 text-left">Username</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user: any) => (
+                <tr key={user.id} className="border-t border-cyan-400/10 hover:bg-cyan-900/10">
+                  <td className="px-4 py-2 text-cyan-100">{user.name}</td>
+                  <td className="px-4 py-2 text-cyan-100">{user.email}</td>
+                  <td className="px-4 py-2 text-cyan-100">{user.username}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
