@@ -49,20 +49,20 @@ export default function CataloguePage() {
   return (
     <div className="min-h-screen">
       <ParticleBackground />
-      <main className="container mx-auto px-8 py-24">
-        <h2 className="text-4xl font-bold mb-8 neon-text">KATALOG PRODUK</h2>
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <h2 className="text-4xl font-bold mb-8 neon-text text-center sm:text-left">KATALOG PRODUK</h2>
 
-        <div className="flex gap-6 items-start">
+        <div className="flex flex-col lg:flex-row gap-6 items-start">
           {/* Sidebar Filter */}
-          <div className="w-1/4">
+          <div className="w-full lg:w-1/4">
             <FilterPanel onFilter={(ps) => { setPage(1); setFilters(ps) }} />
           </div>
 
           {/* Konten Utama */}
-          <div className="w-3/4">
-            <div className="flex justify-between items-center mb-4">
+          <div className="w-full lg:w-3/4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
               {/* Search Bar */}
-              <div className="relative flex flex-1 flex-shrink-0 max-w-md">
+              <div className="relative flex flex-1 max-w-full sm:max-w-md">
                 <input
                   className="peer block w-full rounded-lg border border-cyan-400/30 bg-cyan-900/10 py-[9px] pl-10 text-sm text-cyan-100 outline-2 placeholder:text-cyan-400/60 focus:border-cyan-400 focus:outline-none"
                   placeholder="Cari produk..."
@@ -73,19 +73,20 @@ export default function CataloguePage() {
                 <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-cyan-400/60 peer-focus:text-cyan-400" />
               </div>
 
-              <p className="text-cyan-400 text-sm ml-4">Total Produk: {total}</p>
+              <p className="text-cyan-400 text-sm sm:ml-4 text-center sm:text-left">Total Produk: {total}</p>
             </div>
 
-{loading ? (
-  <ProductGridSkeleton />
-) : products.length === 0 ? (
-  <p className="text-white text-center text-lg mt-10">Produk tidak ditemukan.</p>
-) : (
-  <ProductGrid products={products} query={q} />
-)}
+            {/* Grid Produk */}
+            {loading ? (
+              <ProductGridSkeleton />
+            ) : products.length === 0 ? (
+              <p className="text-white text-center text-lg mt-10">Produk tidak ditemukan.</p>
+            ) : (
+              <ProductGrid products={products} query={q} />
+            )}
 
             {/* Pagination */}
-            <div className="mt-8 flex justify-center gap-2">
+            <div className="mt-8 flex flex-wrap justify-center gap-2">
               {/* Tombol kiri */}
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
